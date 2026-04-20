@@ -63,7 +63,7 @@ else
 
   # start server in background
   (
-    cd ./qwen3-tts-webui
+    cd ./core/qwen3-tts-webui
 
     direnv allow
 

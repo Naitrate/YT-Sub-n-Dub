@@ -1,0 +1,3 @@
+[submodule "core/qwen3-tts-webui"]
+	path = core/qwen3-tts-webui
+	url = https://github.com/AfkaraLP/qwen3-tts-webui

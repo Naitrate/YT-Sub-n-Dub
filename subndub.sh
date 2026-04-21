@@ -5,11 +5,18 @@
 set -e
 
 URL="$1"
+COOKIES_FILE="$2"
 API_URL="http://localhost:8000/health"
 
 if [ -z "$URL" ]; then
   echo "Usage: $0 <youtube-url>"
   exit 1
+fi
+
+YTDLP_ARGS=()
+
+if [ -n "$COOKIES_FILE" ]; then
+  YTDLP_ARGS+=(--cookies "$COOKIES_FILE")
 fi
 
 TEMP_DIR="./temp"
@@ -19,7 +26,7 @@ mkdir $TEMP_DIR
 mkdir $OUT_DIR
 
 echo "⬇️ Downloading video..."
-yt-dlp -f "bv*+ba/best" -o "$TEMP_DIR/%(title)s.%(ext)s" "$URL"
+yt-dlp "${YTDLP_ARGS[@]}" -f "bv*+ba/best" -o "$TEMP_DIR/%(title)s.%(ext)s" "$URL"
 
 # Get downloaded video filename
 VIDEO="$(ls -t "$TEMP_DIR"/*.mp4 "$TEMP_DIR"/*.mkv "$TEMP_DIR"/*.webm 2>/dev/null | head -n 1)"
@@ -45,6 +52,7 @@ whisper-cli \
   -f "${BASENAME}.wav" \
   -of "${BASENAME}" \
   --max-len 50 \
+  -tr \
   -osrt
 
 # Fix segmentation issues with the subtitles.
